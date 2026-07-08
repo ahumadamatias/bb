@@ -136,8 +136,10 @@ func (c *Client) CreatePullRequest(workspace, repoSlug string, in CreatePullRequ
 }
 
 // InlineComment locates a comment on a specific file/line of the diff.
-// Not used by any v1 command yet, but modeled now so inline comments can
-// be added later by just wiring up flags.
+// "To" anchors to a line in the new (destination) version of the file,
+// which covers added/unchanged lines — the common case. Bitbucket also
+// supports a "from" line for comments anchored to a removed line in the
+// old version, not modeled here yet.
 type InlineComment struct {
 	Path string `json:"path"`
 	To   int    `json:"to,omitempty"`
@@ -156,12 +158,71 @@ type Comment struct {
 	Inline  *InlineComment `json:"inline,omitempty"`
 }
 
-// CreatePullRequestComment adds a general (non-inline) comment to a pull
-// request.
-func (c *Client) CreatePullRequestComment(workspace, repoSlug string, id int, body string) (*Comment, error) {
-	in := Comment{Content: commentContent{Raw: body}}
+// CreateCommentInput is the input to CreatePullRequestComment. Leave
+// Path empty for a general (non-inline) comment; set Path (and
+// optionally Line) to anchor the comment to a specific file/line of the
+// diff.
+type CreateCommentInput struct {
+	Body string
+	Path string
+	Line int
+}
+
+// CreatePullRequestComment adds a comment to a pull request: general, or
+// inline on a specific file/line when in.Path is set.
+func (c *Client) CreatePullRequestComment(workspace, repoSlug string, id int, in CreateCommentInput) (*Comment, error) {
+	body := Comment{Content: commentContent{Raw: in.Body}}
+	if in.Path != "" {
+		body.Inline = &InlineComment{Path: in.Path, To: in.Line}
+	}
 	var out Comment
-	if err := c.doJSON(http.MethodPost, pullRequestPath(workspace, repoSlug, id)+"/comments", in, &out); err != nil {
+	if err := c.doJSON(http.MethodPost, pullRequestPath(workspace, repoSlug, id)+"/comments", body, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Task states as returned by the API in the "state" field. Bitbucket
+// also has a "pending" boolean on tasks, but its polarity is
+// inconsistently documented/behaves confusingly in practice — this
+// client only relies on "state" and never sends "pending".
+const (
+	TaskStateUnresolved = "UNRESOLVED"
+	TaskStateResolved   = "RESOLVED"
+)
+
+// Task is a pull request task: a to-do / blocking item, optionally
+// attached to a comment (it then renders below that comment in
+// Bitbucket's UI).
+type Task struct {
+	ID      int            `json:"id"`
+	State   string         `json:"state"`
+	Content commentContent `json:"content"`
+}
+
+// taskCommentRef references an existing comment by ID when creating a
+// task linked to it; Bitbucket only requires the ID field for this.
+type taskCommentRef struct {
+	ID int `json:"id"`
+}
+
+// createTaskInput is the request body for creating a pull request task.
+type createTaskInput struct {
+	Content commentContent  `json:"content"`
+	Comment *taskCommentRef `json:"comment,omitempty"`
+}
+
+// CreatePullRequestTask creates a task (to-do / blocking item) on a pull
+// request. If commentID is non-zero, the task is linked to that
+// existing comment; pass 0 for a standalone task not tied to any
+// comment.
+func (c *Client) CreatePullRequestTask(workspace, repoSlug string, prID int, body string, commentID int) (*Task, error) {
+	in := createTaskInput{Content: commentContent{Raw: body}}
+	if commentID != 0 {
+		in.Comment = &taskCommentRef{ID: commentID}
+	}
+	var out Task
+	if err := c.doJSON(http.MethodPost, pullRequestPath(workspace, repoSlug, prID)+"/tasks", in, &out); err != nil {
 		return nil, err
 	}
 	return &out, nil

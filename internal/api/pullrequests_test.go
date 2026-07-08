@@ -116,7 +116,7 @@ func TestCreatePullRequestComment(t *testing.T) {
 	c := NewClient("user@example.com", "token", "test")
 	c.BaseURL = server.URL
 
-	comment, err := c.CreatePullRequestComment("myworkspace", "bb", 42, "Looks good to me.")
+	comment, err := c.CreatePullRequestComment("myworkspace", "bb", 42, CreateCommentInput{Body: "Looks good to me."})
 	if err != nil {
 		t.Fatalf("CreatePullRequestComment() error = %v", err)
 	}
@@ -128,6 +128,99 @@ func TestCreatePullRequestComment(t *testing.T) {
 	}
 	if want := "/repositories/myworkspace/bb/pullrequests/42/comments"; gotPath != want {
 		t.Errorf("path = %q, want %q", gotPath, want)
+	}
+}
+
+func TestCreatePullRequestCommentInline(t *testing.T) {
+	var gotBody map[string]interface{}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewDecoder(r.Body).Decode(&gotBody)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"id":      101,
+			"content": map[string]string{"raw": "esto está mal"},
+			"inline":  map[string]interface{}{"path": "internal/api/client.go", "to": 42},
+		})
+	}))
+	defer server.Close()
+
+	c := NewClient("user@example.com", "token", "test")
+	c.BaseURL = server.URL
+
+	comment, err := c.CreatePullRequestComment("myworkspace", "bb", 42, CreateCommentInput{
+		Body: "esto está mal",
+		Path: "internal/api/client.go",
+		Line: 42,
+	})
+	if err != nil {
+		t.Fatalf("CreatePullRequestComment() error = %v", err)
+	}
+	if comment.Inline == nil || comment.Inline.Path != "internal/api/client.go" || comment.Inline.To != 42 {
+		t.Errorf("comment.Inline = %+v", comment.Inline)
+	}
+
+	inline := gotBody["inline"].(map[string]interface{})
+	if inline["path"] != "internal/api/client.go" || inline["to"] != float64(42) {
+		t.Errorf("request body inline = %+v", inline)
+	}
+}
+
+func TestCreatePullRequestTaskLinkedToComment(t *testing.T) {
+	var gotPath string
+	var gotBody map[string]interface{}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotPath = r.URL.Path
+		w.Header().Set("Content-Type", "application/json")
+		json.NewDecoder(r.Body).Decode(&gotBody)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"id":      5,
+			"state":   TaskStateUnresolved,
+			"content": map[string]string{"raw": "hay que corregir esto"},
+		})
+	}))
+	defer server.Close()
+
+	c := NewClient("user@example.com", "token", "test")
+	c.BaseURL = server.URL
+
+	task, err := c.CreatePullRequestTask("myworkspace", "bb", 42, "hay que corregir esto", 101)
+	if err != nil {
+		t.Fatalf("CreatePullRequestTask() error = %v", err)
+	}
+	if task.ID != 5 || task.State != TaskStateUnresolved {
+		t.Errorf("task = %+v", task)
+	}
+	if want := "/repositories/myworkspace/bb/pullrequests/42/tasks"; gotPath != want {
+		t.Errorf("path = %q, want %q", gotPath, want)
+	}
+	comment := gotBody["comment"].(map[string]interface{})
+	if comment["id"] != float64(101) {
+		t.Errorf("request body comment.id = %v, want 101", comment["id"])
+	}
+	if _, hasPending := gotBody["pending"]; hasPending {
+		t.Errorf("request body should not include the legacy 'pending' field, got %+v", gotBody)
+	}
+}
+
+func TestCreatePullRequestTaskStandalone(t *testing.T) {
+	var gotBody map[string]interface{}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewDecoder(r.Body).Decode(&gotBody)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"id": 6, "state": TaskStateUnresolved, "content": map[string]string{"raw": "task suelta"},
+		})
+	}))
+	defer server.Close()
+
+	c := NewClient("user@example.com", "token", "test")
+	c.BaseURL = server.URL
+
+	if _, err := c.CreatePullRequestTask("myworkspace", "bb", 42, "task suelta", 0); err != nil {
+		t.Fatalf("CreatePullRequestTask() error = %v", err)
+	}
+	if _, hasComment := gotBody["comment"]; hasComment {
+		t.Errorf("request body should not include 'comment' for a standalone task, got %+v", gotBody)
 	}
 }
 
