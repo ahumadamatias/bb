@@ -101,7 +101,11 @@ func loginRun(opts *LoginOptions) error {
 		if workspaces, wsErr := client.ListWorkspaces(0); wsErr == nil && len(workspaces) > 0 {
 			fmt.Fprintln(io.Out, "\nWorkspaces disponibles:")
 			for i, w := range workspaces {
-				fmt.Fprintf(io.Out, "  %d. %s (%s)\n", i+1, w.Slug, w.Name)
+				if w.Name != "" && w.Name != w.Slug {
+					fmt.Fprintf(io.Out, "  %d. %s (%s)\n", i+1, w.Slug, w.Name)
+				} else {
+					fmt.Fprintf(io.Out, "  %d. %s\n", i+1, w.Slug)
+				}
 			}
 			fmt.Fprint(io.Out, "Elegí un workspace por defecto (número, Enter para omitir): ")
 			line, _ := bufio.NewReader(io.In).ReadString('\n')

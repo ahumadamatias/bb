@@ -12,7 +12,8 @@ type User struct {
 }
 
 // CurrentUser fetches the authenticated user, doubling as a credential
-// check: a 401/403 here means the configured email/token are invalid.
+// check: a 401/403 here means the configured email/token are invalid, or
+// (for scoped Atlassian API tokens) missing the read:user:bitbucket scope.
 func (c *Client) CurrentUser() (*User, error) {
 	var u User
 	if err := c.doJSON(http.MethodGet, "/user", nil, &u); err != nil {

@@ -1,13 +1,19 @@
 {
-  "pagelen": 10,
-  "page": 1,
-  "size": 1,
   "values": [
     {
-      "uuid": "{33333333-3333-3333-3333-333333333333}",
-      "slug": "myworkspace",
-      "name": "My Workspace"
+      "type": "workspace_access",
+      "administrator": true,
+      "workspace": {
+        "type": "workspace_base",
+        "uuid": "{33333333-3333-3333-3333-333333333333}",
+        "slug": "myworkspace",
+        "links": {
+          "self": {"href": "https://api.bitbucket.org/2.0/workspaces/myworkspace"}
+        }
+      }
     }
   ],
-  "next": null
+  "pagelen": 25,
+  "size": 1,
+  "page": 1
 }
