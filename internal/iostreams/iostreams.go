@@ -3,6 +3,7 @@
 package iostreams
 
 import (
+	"bytes"
 	"io"
 	"os"
 
@@ -41,6 +42,18 @@ func System() *IOStreams {
 	io.colorEnabled = io.isStdoutTTY && os.Getenv("NO_COLOR") == ""
 
 	return io
+}
+
+// Test returns an IOStreams backed by in-memory buffers instead of the
+// real stdio, for use by command-level unit tests. TTY detection is
+// disabled by default; set the returned IOStreams' fields directly if a
+// test needs to simulate a terminal.
+func Test() (ios *IOStreams, stdin, stdout, stderr *bytes.Buffer) {
+	stdin = &bytes.Buffer{}
+	stdout = &bytes.Buffer{}
+	stderr = &bytes.Buffer{}
+	ios = &IOStreams{In: stdin, Out: stdout, ErrOut: stderr}
+	return
 }
 
 func (s *IOStreams) IsStdoutTTY() bool {

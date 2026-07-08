@@ -3,6 +3,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -143,7 +144,11 @@ func Resolve(opts ResolveOptions) (*Resolved, error) {
 	return r, nil
 }
 
-// ErrNoCredentials is returned by callers (not this package) when Resolve
-// yields no email/token. Kept here so command code can reference a single
-// canonical message.
+// NoCredentialsMessage is the single canonical message shown when a
+// command needs credentials but none were resolved.
 const NoCredentialsMessage = "No hay credenciales configuradas. Ejecutá 'bb auth login' o seteá BB_EMAIL y BB_TOKEN."
+
+// ErrNoCredentials is returned by factory.Factory.Client (and can be
+// checked with errors.Is) when no email/token could be resolved from
+// flags, env vars, or the config file. main.go maps it to exit code 4.
+var ErrNoCredentials = errors.New(NoCredentialsMessage)
