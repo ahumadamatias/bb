@@ -1,0 +1,33 @@
+{
+  "pagelen": 10,
+  "page": 1,
+  "size": 2,
+  "values": [
+    {
+      "name": "main",
+      "target": {
+        "hash": "abc1234",
+        "date": "2026-07-01T12:00:00.000000+00:00",
+        "author": {
+          "raw": "Matias Ahumada <ahumadamatias7@gmail.com>",
+          "user": {
+            "uuid": "{11111111-1111-1111-1111-111111111111}",
+            "display_name": "Matias Ahumada"
+          }
+        }
+      }
+    },
+    {
+      "name": "feature/login",
+      "target": {
+        "hash": "def5678",
+        "date": "2026-06-28T08:15:00.000000+00:00",
+        "author": {
+          "raw": "Ana Dev <ana@example.com>",
+          "user": null
+        }
+      }
+    }
+  ],
+  "next": null
+}

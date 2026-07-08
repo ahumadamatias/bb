@@ -1,0 +1,13 @@
+{
+  "pagelen": 10,
+  "page": 1,
+  "size": 1,
+  "values": [
+    {
+      "uuid": "{33333333-3333-3333-3333-333333333333}",
+      "slug": "myworkspace",
+      "name": "My Workspace"
+    }
+  ],
+  "next": null
+}

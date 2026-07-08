@@ -1,0 +1,10 @@
+{
+  "slug": "bb",
+  "name": "bb",
+  "full_name": "myworkspace/bb",
+  "description": "Bitbucket CLI",
+  "is_private": true,
+  "updated_on": "2026-07-01T12:00:00.000000+00:00",
+  "mainbranch": {"name": "main"},
+  "links": {"html": {"href": "https://bitbucket.org/myworkspace/bb"}}
+}

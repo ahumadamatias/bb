@@ -1,0 +1,28 @@
+{
+  "pagelen": 10,
+  "page": 1,
+  "size": 2,
+  "values": [
+    {
+      "slug": "bb",
+      "name": "bb",
+      "full_name": "myworkspace/bb",
+      "description": "Bitbucket CLI",
+      "is_private": true,
+      "updated_on": "2026-07-01T12:00:00.000000+00:00",
+      "mainbranch": {"name": "main"},
+      "links": {"html": {"href": "https://bitbucket.org/myworkspace/bb"}}
+    },
+    {
+      "slug": "other-repo",
+      "name": "other-repo",
+      "full_name": "myworkspace/other-repo",
+      "description": "",
+      "is_private": false,
+      "updated_on": "2026-06-15T09:30:00.000000+00:00",
+      "mainbranch": {"name": "master"},
+      "links": {"html": {"href": "https://bitbucket.org/myworkspace/other-repo"}}
+    }
+  ],
+  "next": null
+}
