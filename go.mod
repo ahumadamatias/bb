@@ -1,4 +1,4 @@
-module github.com/matiasahumada/bb
+module github.com/ahumadamatias/bb
 
 go 1.25.4
 

@@ -4,7 +4,7 @@ package pr
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/matiasahumada/bb/internal/cmd/factory"
+	"github.com/ahumadamatias/bb/internal/cmd/factory"
 )
 
 // NewCmdPR builds the `bb pr` command group.

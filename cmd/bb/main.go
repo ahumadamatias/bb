@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/matiasahumada/bb/internal/api"
-	"github.com/matiasahumada/bb/internal/cmd/cmdutil"
-	"github.com/matiasahumada/bb/internal/cmd/root"
-	"github.com/matiasahumada/bb/internal/config"
+	"github.com/ahumadamatias/bb/internal/api"
+	"github.com/ahumadamatias/bb/internal/cmd/cmdutil"
+	"github.com/ahumadamatias/bb/internal/cmd/root"
+	"github.com/ahumadamatias/bb/internal/config"
 )
 
 // version is set at build time via -ldflags "-X main.version=...".

@@ -5,10 +5,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/matiasahumada/bb/internal/api"
-	"github.com/matiasahumada/bb/internal/cmd/factory"
-	"github.com/matiasahumada/bb/internal/config"
-	"github.com/matiasahumada/bb/internal/iostreams"
+	"github.com/ahumadamatias/bb/internal/api"
+	"github.com/ahumadamatias/bb/internal/cmd/factory"
+	"github.com/ahumadamatias/bb/internal/config"
+	"github.com/ahumadamatias/bb/internal/iostreams"
 )
 
 // StatusOptions holds the dependencies for `bb auth status`.

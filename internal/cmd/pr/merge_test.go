@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/matiasahumada/bb/internal/api"
-	"github.com/matiasahumada/bb/internal/config"
-	"github.com/matiasahumada/bb/internal/gitctx"
-	"github.com/matiasahumada/bb/internal/iostreams"
+	"github.com/ahumadamatias/bb/internal/api"
+	"github.com/ahumadamatias/bb/internal/config"
+	"github.com/ahumadamatias/bb/internal/gitctx"
+	"github.com/ahumadamatias/bb/internal/iostreams"
 )
 
 func TestMergeRunRejectsNonOpenPR(t *testing.T) {

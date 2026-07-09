@@ -6,12 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/matiasahumada/bb/internal/cmd/auth"
-	"github.com/matiasahumada/bb/internal/cmd/branch"
-	"github.com/matiasahumada/bb/internal/cmd/cmdutil"
-	"github.com/matiasahumada/bb/internal/cmd/factory"
-	"github.com/matiasahumada/bb/internal/cmd/pr"
-	"github.com/matiasahumada/bb/internal/cmd/repo"
+	"github.com/ahumadamatias/bb/internal/cmd/auth"
+	"github.com/ahumadamatias/bb/internal/cmd/branch"
+	"github.com/ahumadamatias/bb/internal/cmd/cmdutil"
+	"github.com/ahumadamatias/bb/internal/cmd/factory"
+	"github.com/ahumadamatias/bb/internal/cmd/pr"
+	"github.com/ahumadamatias/bb/internal/cmd/repo"
 )
 
 // NewCmdRoot builds the root "bb" command, wires the real Factory, and

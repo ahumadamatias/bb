@@ -14,10 +14,10 @@ no está contemplado.
 Con Go instalado:
 
 ```sh
-go install github.com/matiasahumada/bb/cmd/bb@latest
+go install github.com/ahumadamatias/bb/cmd/bb@latest
 ```
 
-O descargá el binario para tu plataforma desde la [página de releases](https://github.com/matiasahumada/bb/releases).
+O descargá el binario para tu plataforma desde la [página de releases](https://github.com/ahumadamatias/bb/releases).
 
 ## Setup
 

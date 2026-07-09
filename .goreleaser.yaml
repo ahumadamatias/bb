@@ -53,7 +53,7 @@ release:
 #     repository:
 #       owner: matiasahumada
 #       name: homebrew-tap
-#     homepage: "https://github.com/matiasahumada/bb"
+#     homepage: "https://github.com/ahumadamatias/bb"
 #     description: "CLI no oficial para Bitbucket Cloud"
 #     license: "MIT"
 #     install: |

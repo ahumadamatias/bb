@@ -1,8 +1,8 @@
 package cmdutil
 
 import (
-	"github.com/matiasahumada/bb/internal/config"
-	"github.com/matiasahumada/bb/internal/gitctx"
+	"github.com/ahumadamatias/bb/internal/config"
+	"github.com/ahumadamatias/bb/internal/gitctx"
 )
 
 // ResolveWorkspace determines which workspace a command should operate
