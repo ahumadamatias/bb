@@ -11,13 +11,62 @@ no está contemplado.
 
 ## Instalación
 
-Con Go instalado:
+### Con Go
+
+Requiere Go instalado y `$HOME/go/bin` en tu `PATH`.
 
 ```sh
 go install github.com/ahumadamatias/bb/cmd/bb@latest
 ```
 
-O descargá el binario para tu plataforma desde la [página de releases](https://github.com/ahumadamatias/bb/releases).
+Verificá que quedó disponible:
+
+```sh
+bb --version
+```
+
+Si tu shell no encuentra `bb`, agregá el directorio de binarios de Go al
+`PATH`:
+
+```sh
+export PATH="$HOME/go/bin:$PATH"
+```
+
+Para dejarlo permanente, agregá esa línea a tu `~/.zshrc`, `~/.bashrc` o el
+archivo de configuración de tu shell.
+
+Si acabamos de publicar un cambio y `go install @latest` todavía resuelve una
+versión vieja por cache del proxy público de Go, instalá directo desde GitHub:
+
+```sh
+GOPROXY=direct go install github.com/ahumadamatias/bb/cmd/bb@latest
+```
+
+Cuando haya releases versionadas, preferí instalar una versión explícita:
+
+```sh
+go install github.com/ahumadamatias/bb/cmd/bb@v0.1.0
+```
+
+### Desde un clon local
+
+Si estás desarrollando `bb` desde este repo:
+
+```sh
+make install
+```
+
+O directo con Go:
+
+```sh
+go install ./cmd/bb
+```
+
+### Binarios precompilados
+
+También podés descargar el binario para tu plataforma desde la
+[página de releases](https://github.com/ahumadamatias/bb/releases), cuando haya
+releases publicadas.
 
 ## Setup
 
