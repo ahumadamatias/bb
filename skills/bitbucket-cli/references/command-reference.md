@@ -28,6 +28,31 @@ Use `--workspace` and `--repo` when not running inside a Bitbucket git clone:
 bb pr list --workspace acme --repo api --output json
 ```
 
+## Branch Code Inspection
+
+`bb` lists remote branches. Reading the code of a branch is a Git operation.
+Prefer inspecting `origin/<branch>` without changing the working tree:
+
+```bash
+git fetch origin feature/api-client
+git ls-tree -r --name-only origin/feature/api-client
+git show origin/feature/api-client:internal/api/client.go
+```
+
+The skill script `bb-branch-code.mjs` wraps this safely:
+
+```bash
+node scripts/bb-branch-code.mjs feature/api-client
+node scripts/bb-branch-code.mjs feature/api-client internal/api/client.go
+node scripts/bb-branch-code.mjs feature/api-client internal/api/client.go --workspace acme --repo api
+node scripts/bb-branch-code.mjs feature/api-client internal/api/client.go --remote https://bitbucket.org/acme/api.git
+```
+
+For other projects, `--workspace`/`--repo` builds the remote URL
+`https://bitbucket.org/<workspace>/<repo>.git` and fetches into a temporary Git
+repo. Public repos work anonymously. Private repos require Git credentials that
+can access that Bitbucket repo.
+
 ## PR Comments
 
 General comment:

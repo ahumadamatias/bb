@@ -1,6 +1,6 @@
 ---
 name: bitbucket-cli
-description: Use when an AI agent needs to operate Bitbucket Cloud through the `bb` CLI: check auth, inspect repos/branches/PRs, review diffs, comment, approve, or merge pull requests.
+description: Use when an AI agent needs to operate Bitbucket Cloud through the `bb` CLI: check auth, inspect repos/branches/PRs, view branch code, review diffs, comment, approve, or merge pull requests.
 ---
 
 # Bitbucket CLI
@@ -11,7 +11,7 @@ Prefer JSON-producing scripts for context-efficient, machine-readable results.
 ## How It Works
 
 1. Check that `bb` is installed and authenticated with `bb-check.mjs`.
-2. Use read-only scripts first: list PRs, view PR details, and fetch diffs.
+2. Use read-only scripts first: list branches/PRs, view branch files, view PR details, and fetch diffs.
 3. Present findings to the user before taking mutating actions.
 4. Only comment, approve, or merge when the user explicitly asks for that action.
 5. Use `references/command-reference.md` only when you need raw command details.
@@ -21,6 +21,7 @@ Prefer JSON-producing scripts for context-efficient, machine-readable results.
 - Never run `bb pr merge` unless the user explicitly asks to merge a specific PR.
 - Never run `bb pr approve` unless the user explicitly asks to approve or remove approval.
 - Before commenting inline, verify the target `path` and `line` are from the PR diff.
+- Inspect branch code with `bb-branch-code.mjs`; it reads `origin/<branch>` without checking out or modifying the working tree.
 - If `bb auth status` fails, ask the user to run `bb auth login`; do not request tokens in chat.
 - Prefer `--output json` for read operations.
 
@@ -28,6 +29,8 @@ Prefer JSON-producing scripts for context-efficient, machine-readable results.
 
 ```bash
 node scripts/bb-check.mjs
+node scripts/bb-branch-list.mjs [limit] [--workspace ws --repo repo]
+node scripts/bb-branch-code.mjs <branch> [path] [--workspace ws --repo repo | --remote url]
 node scripts/bb-pr-list.mjs [state] [limit]
 node scripts/bb-pr-view.mjs <id> [--diff]
 node scripts/bb-pr-comment.mjs <id> <body> [path] [line] [--task]
@@ -35,6 +38,20 @@ node scripts/bb-pr-merge.mjs <id> [strategy] [--close-source-branch]
 ```
 
 Arguments:
+
+`bb-branch-list.mjs`:
+
+- `limit` - max branches to return (defaults to `30`; `0` means all)
+- `--workspace` - optional Bitbucket workspace for another repo
+- `--repo` - optional Bitbucket repo slug; must be used with `--workspace`
+
+`bb-branch-code.mjs`:
+
+- `branch` - branch name to inspect from `origin/<branch>`
+- `path` - optional file path; omit it to list files in the branch
+- `--workspace` - optional Bitbucket workspace for another repo
+- `--repo` - optional Bitbucket repo slug; must be used with `--workspace`
+- `--remote` - optional Git remote URL; use instead of `--workspace`/`--repo`
 
 `bb-pr-list.mjs`:
 
@@ -64,6 +81,11 @@ Examples:
 
 ```bash
 node scripts/bb-check.mjs
+node scripts/bb-branch-list.mjs 50
+node scripts/bb-branch-list.mjs 50 --workspace acme --repo api
+node scripts/bb-branch-code.mjs feature/api-client
+node scripts/bb-branch-code.mjs feature/api-client internal/api/client.go
+node scripts/bb-branch-code.mjs feature/api-client internal/api/client.go --workspace acme --repo api
 node scripts/bb-pr-list.mjs OPEN 20
 node scripts/bb-pr-view.mjs 42 --diff
 node scripts/bb-pr-comment.mjs 42 "Please fix this" internal/api/client.go 42 --task
